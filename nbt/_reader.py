@@ -3,6 +3,8 @@ import contextlib as _contextlib
 import gzip as _gzip
 import struct as _struct
 
+import six as _six
+
 from . import _constants
 from . import _tag
 
@@ -20,14 +22,14 @@ class _EofReportingStream(object):
 
 def _read_tag_header(stream):
     data = stream.read(1)
-    tag_type = ord(data[0])
+    tag_type = _struct.unpack('>B', data)[0]
     if tag_type == _constants.TAG_TYPE_END:
         return tag_type, None
     tag_name_length = _struct.unpack('>H', stream.read(2))[0]
     if tag_name_length:
         tag_name = stream.read(tag_name_length).decode('utf-8')
     else:
-        tag_name = u''
+        tag_name = _six.u('')
     return tag_type, tag_name
 
 
@@ -68,7 +70,7 @@ def _read_simple_payload(tag_type, stream):
         length = _struct.unpack('>I', stream.read(4))[0]
         data = stream.read(4 * length)
         return _tag.IntArrayTag(
-            _struct.unpack('>i', data[x*4:x*4+4])[0] for x in xrange(length))
+            _struct.unpack('>i', data[x*4:x*4+4])[0] for x in _six.moves.xrange(length))
     else:
         raise IOError('Unknown tag type!')
 

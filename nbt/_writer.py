@@ -2,6 +2,8 @@ import contextlib as _contextlib
 import gzip as _gzip
 import struct as _struct
 
+import six as _six
+
 from . import _constants
 from . import _tag
 
@@ -57,7 +59,7 @@ def _deal_with_tag(stream, tag, stack):
         _write_simple_tag_payload(stream, tag)
 
 
-def write_tag(stream, tag, root_name=u''):
+def write_tag(stream, tag, root_name=_six.u('')):
     if not isinstance(tag, _tag.CompoundTag):
         raise ValueError('Can only write CompoundTags as the root tag!')
 
@@ -84,12 +86,12 @@ def write_tag(stream, tag, root_name=u''):
         _deal_with_tag(stream, tag, tag_stack)
 
 
-def write_file(filename, tag, root_name=u''):
+def write_file(filename, tag, root_name=_six.u('')):
     with open(filename, 'wb') as fh:
         write_tag(fh, tag, root_name)
 
 
-def write_compressed_file(filename, tag, root_name=u''):
+def write_compressed_file(filename, tag, root_name=_six.u('')):
     with _contextlib.closing(_gzip.open(filename, 'wb')) as gh:
         write_tag(gh, tag, root_name)
 

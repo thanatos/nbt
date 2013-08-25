@@ -1,5 +1,7 @@
 import collections
 
+import six as _six
+
 
 class Tag(object):
     pass
@@ -68,7 +70,7 @@ class ByteArrayTag(_SimpleTag):
 
 class StringTag(_SimpleTag):
     def _validate(self, value):
-        value = unicode(value)
+        value = _six.text_type(value)
         return value
 
 
@@ -144,7 +146,7 @@ class CompoundTag(Tag, collections.MutableMapping):
         return self._value[key]
 
     def __setitem__(self, key, value):
-        key = unicode(key)
+        key = _six.text_type(key)
         if not isinstance(value, Tag):
             raise TypeError('CompoundTags can only hold tags as values.')
         self._value[key] = value

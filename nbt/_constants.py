@@ -1,3 +1,5 @@
+import six as _six
+
 from . import _tag
 
 
@@ -28,8 +30,8 @@ TAG_TYPE_TO_CLASS = {
     TAG_TYPE_COMPOUND: _tag.CompoundTag,
     TAG_TYPE_INT_ARRAY: _tag.IntArrayTag,
 }
-TAG_CLASS_TO_TYPE = dict((v, k) for k, v in TAG_TYPE_TO_CLASS.iteritems())
-ALL_TAG_TYPES = set(TAG_TYPE_TO_CLASS.iterkeys())
+TAG_CLASS_TO_TYPE = dict((v, k) for k, v in _six.iteritems(TAG_TYPE_TO_CLASS))
+ALL_TAG_TYPES = set(TAG_TYPE_TO_CLASS)
 ALL_TAG_TYPES.add(TAG_TYPE_END)
 
 
