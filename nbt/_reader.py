@@ -1,6 +1,7 @@
 import array as _array
 import contextlib as _contextlib
 import gzip as _gzip
+import io as _io
 import struct as _struct
 
 import six as _six
@@ -182,8 +183,14 @@ def read_compressed_file(filename):
         return read_tag(fh)
 
 
+def read_buffer(data):
+    sio = _io.BytesIO(data)
+    return read_tag(sio)
+
+
 __all__ = [
     'read_tag',
     'read_file',
     'read_compressed_file',
+    'read_buffer',
 ]
