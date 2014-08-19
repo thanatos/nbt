@@ -102,7 +102,12 @@ class _ListLikeTag(Tag, collections.MutableSequence):
         self._value.insert(index, value)
 
 
-class ListTag(_ListLikeTag):
+# Common base between ListTag and EmptyListTag.
+class ListTagBase(Tag, collections.Sequence):
+    pass
+
+
+class ListTag(ListTagBase, _ListLikeTag):
     def __init__(self, tag_type, tags=()):
         self._tag_type = tag_type
         super(ListTag, self).__init__(tags)
@@ -115,6 +120,27 @@ class ListTag(_ListLikeTag):
         if not isinstance(value, self._tag_type):
             raise TypeError('This ListTag contains {0}.'.format(self._tag_type))
         return value
+
+
+# This isn't a real list tag, but sometimes we see TAG_Lists with an inner type
+# of TAG_End, which makes no sense at all. But we see it. If this looks like a
+# hack, it's because the underlying datastream also looks like a hack.
+class EmptyListTag(ListTagBase):
+    def __init__(self):
+        super(EmptyListTag, self).__init__()
+
+    def __iter__(self):
+        return iter(())
+
+    def __getitem__(self, index):
+        raise IndexError(index)
+
+    def __len__(self):
+        return 0
+
+    @property
+    def tag_type(self):
+        return TAG_TYPE_END
 
 
 class IntArrayTag(_ListLikeTag):

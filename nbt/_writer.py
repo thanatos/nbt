@@ -50,7 +50,7 @@ def _write_named_tag_header(stream, tag_type, name):
 def _deal_with_tag(stream, tag, stack):
     if isinstance(tag, _tag.CompoundTag):
         stack.append((tag, tag.iteritems()))
-    elif isinstance(tag, _tag.ListTag):
+    elif isinstance(tag, _tag.ListTagBase):
         stack.append((tag, iter(tag)))
         list_tag_header = _struct.pack(
             '>BI', _constants.TAG_CLASS_TO_TYPE[tag.tag_type], len(tag))

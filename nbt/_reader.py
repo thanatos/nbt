@@ -93,11 +93,15 @@ def _process_tag_payload(stream, tag_type, stack):
     elif tag_type == _constants.TAG_TYPE_LIST:
         inner_type, length = _struct.unpack('>BI', stream.read(5))
         if inner_type == _constants.TAG_TYPE_END:
-            raise MalformedNbtDataError(
-                'Attempted to read the tag type for a list (TAG_List), but'
-                ' got an inner type of TAG_End.',
-                stream.tell() - 5,
-            )
+            if length == 0:
+                stack[-1].process_value(_tag.EmptyListTag())
+                return None
+            else:
+                raise MalformedNbtDataError(
+                    'Attempted to read the tag type for a list (TAG_List), but'
+                    ' got an inner type of TAG_End with non-zero length.',
+                    stream.tell() - 5,
+                )
         elif inner_type not in _constants.ALL_TAG_TYPES:
             raise MalformedNbtDataError(
                 'The inner tag type for a list (TAG_List) was {!r}, which this'
