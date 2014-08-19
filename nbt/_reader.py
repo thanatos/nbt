@@ -20,6 +20,16 @@ class _EofReportingStream(object):
             raise IOError('Unexpected EOF.')
         return data
 
+    def tell(self):
+        return self._stream.tell()
+
+
+class MalformedNbtDataError(Exception):
+    def __init__(self, message, stream_position):
+        super(MalformedNbtDataError, self).__init__(message, stream_position)
+        self.message = message
+        self.stream_position = stream_position
+
 
 def _read_named_tag_header(stream):
     data = stream.read(1)
