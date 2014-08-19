@@ -21,7 +21,7 @@ class _EofReportingStream(object):
         return data
 
 
-def _read_tag_header(stream):
+def _read_named_tag_header(stream):
     data = stream.read(1)
     tag_type = _struct.unpack('>B', data)[0]
     if tag_type == _constants.TAG_TYPE_END:
@@ -144,7 +144,7 @@ class _TagStackCompound(_TagStackBase):
         self._tag_name = None
 
     def process(self, stream):
-        tag_type, tag_name = _read_tag_header(stream)
+        tag_type, tag_name = _read_named_tag_header(stream)
         if tag_type == _constants.TAG_TYPE_END:
             return None, self._value
         else:
@@ -161,7 +161,7 @@ class _TagStackCompound(_TagStackBase):
 def read_tag(stream):
     eof_stream = _EofReportingStream(stream)
     
-    tag_type, name = _read_tag_header(eof_stream)
+    tag_type, name = _read_named_tag_header(eof_stream)
     if tag_type != _constants.TAG_TYPE_COMPOUND:
         raise IOError('Root tag was not a compound tag!')
 
